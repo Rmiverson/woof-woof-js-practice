@@ -1,12 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
    loadJson()
-   
+   addListeners()
 })
 
 const loadJson = () => {
    fetch('http://localhost:3000/pups')
    .then(resp => resp.json())
-   .then(json => renderPupList(json))
+   .then(json => {
+      allDogs = json
+      renderPupList(allDogs)
+   })
 }
 
 const patchPup = (pup) => {
@@ -26,7 +29,6 @@ const renderPupList = (pups) => {
    const div = document.getElementById('dog-bar')
    div.innerHTML = ""
 
-   addListeners(pups)
    pups.forEach( pup => {
       const span = document.createElement('span')
 
@@ -79,19 +81,21 @@ const togglePup = (pup) => {
    patchPup(pup)
 }
 
-const addListeners = (pups) => {
+const addListeners = () => {
    const filterBtn = document.getElementById('good-dog-filter')
 
    filterBtn.addEventListener('click', () => {
+      let filteredDogs = []
       if (filterBtn.textContent === 'Filter good dogs: OFF') {
-         console.log('on')
          filterBtn.textContent = 'Filter good dogs: ON'
-         pups = pups.filter(pup => pup.isGoodDog === true)
-         renderPupList(pups)
+         filteredDogs = allDogs.filter(pup => pup.isGoodDog === true)
       } else if (filterBtn.textContent === 'Filter good dogs: ON') {
-         console.log('off')
          filterBtn.textContent = 'Filter good dogs: OFF'
-         renderPupList(pups)
+         filteredDogs = allDogs
       }
+      renderPupList(filteredDogs)
    })
 }
+
+
+
